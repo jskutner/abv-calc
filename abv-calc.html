@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABV Cocktail Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: #fff;
+            margin-top:60px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            overflow-y: auto;
+            height: 90vh;
+        }
+
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        input {
+            width: 96%;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 1.5em;
+            color: #333;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .ingredient {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .preparation-method {
+            margin-bottom: 20px;
+        }
+
+        /* For mobile responsiveness */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Cocktail ABV Calculator</h1>
+
+        <form id="abvCalculator">
+            <!-- Preparation Method Section -->
+            <div class="preparation-method">
+                <label for="prepMethod">Preparation Method</label>
+                <select id="prepMethod">
+                    <option value="shaken">Shaken (25% dilution)</option>
+                    <option value="stirred">Stirred (15% dilution)</option>
+                    <option value="built">Built in Glass (5% dilution)</option>
+                </select>
+            </div>
+
+            <div id="ingredientsContainer">
+                <div class="ingredient">
+                    <label for="ingredient1">Ingredient 1</label>
+                    <select id="ingredient1" onchange="setABV(1)">
+                        <option value="custom">Custom</option>
+                        <option value="16.5">Lo-Fi Sweet Vermouth</option>
+                        <option value="16.5">Lo-Fi Dry Vermouth</option>
+                        <option value="17.5">Lo-Fi Gentian Vermouth</option>
+                        <option value="0">Non-Alcoholic Mixer</option>
+                        <option value="40">Gin</option>
+                        <option value="40">Vodka</option>
+                        <option value="40">Tequila</option>
+                        <option value="40">Whisky</option>
+                        <option value="40">Rum</option>
+                        <option value="11">LaMarca Prosecco</option>
+                        <option value="7">Dry Apple Cider</option>
+                        <option value="5">Lager Beer</option>
+                    </select>
+
+                    <label for="name1">Ingredient Name (for Custom Ingredients)</label>
+                    <input type="text" id="name1" placeholder="Enter ingredient name" />
+
+                    <label for="abv1">ABV (as percentage, e.g., 40 for 40%)</label>
+                    <input type="number" step="0.1" id="abv1" placeholder="Enter ABV in percentage" required>
+
+                    <label for="oz1">Ounces</label>
+                    <input type="number" step="0.1" id="oz1" placeholder="Enter ounces" required>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" onclick="addIngredient()">Add Another Ingredient</button>
+                <button type="button" onclick="calculateABV()">Calculate Total ABV</button>
+            </div>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let ingredientCount = 1;
+
+        function addIngredient() {
+            ingredientCount++;
+            const ingredientsContainer = document.getElementById('ingredientsContainer');
+            const newIngredient = document.createElement('div');
+            newIngredient.className = 'ingredient';
+            newIngredient.innerHTML = `
+                <label for="ingredient${ingredientCount}">Ingredient ${ingredientCount}</label>
+                <select id="ingredient${ingredientCount}" onchange="setABV(${ingredientCount})">
+                    <option value="custom">Custom</option>
+                    <option value="16.5">Lo-Fi Sweet Vermouth</option>
+                    <option value="16.5">Lo-Fi Dry Vermouth</option>
+                    <option value="17.5">Lo-Fi Gentian Vermouth</option>
+                    <option value="0">Non-Alcoholic Mixer</option>
+                    <option value="40">Gin</option>
+                    <option value="40">Vodka</option>
+                    <option value="40">Tequila</option>
+                    <option value="40">Whisky</option>
+                    <option value="40">Rum</option>
+                    <option value="11">LaMarca Prosecco</option>
+                    <option value="7">Dry Apple Cider</option>
+                    <option value="5">Lager Beer</option>
+                </select>
+
+                <label for="name${ingredientCount}">Ingredient Name (for Custom Ingredients)</label>
+                <input type="text" id="name${ingredientCount}" placeholder="Enter ingredient name" />
+
+                <label for="abv${ingredientCount}">ABV (as percentage, e.g., 40 for 40%)</label>
+                <input type="number" step="0.1" id="abv${ingredientCount}" placeholder="Enter ABV in percentage" required>
+
+                <label for="oz${ingredientCount}">Ounces</label>
+                <input type="number" step="0.1" id="oz${ingredientCount}" placeholder="Enter ounces" required>
+            `;
+            ingredientsContainer.appendChild(newIngredient);
+        }
+
+        function setABV(ingredientNumber) {
+            const ingredientSelect = document.getElementById(`ingredient${ingredientNumber}`);
+            const abvInput = document.getElementById(`abv${ingredientNumber}`);
+
+            if (ingredientSelect.value !== "custom") {
+                abvInput.value = ingredientSelect.value;
+            } else {
+                abvInput.value = ''; // Clear ABV input if "Custom" is selected
+            }
+        }
+
+        function calculateABV() {
+            let totalABV = 0;
+            let totalOunces = 0;
+
+            for (let i = 1; i <= ingredientCount; i++) {
+                const abv = parseFloat(document.getElementById(`abv${i}`).value) / 100; // Convert percentage to decimal
+                const ounces = parseFloat(document.getElementById(`oz${i}`).value);
+
+                if (!isNaN(abv) && !isNaN(ounces)) {
+                    totalABV += abv * ounces;
+                    totalOunces += ounces;
+                }
+            }
+
+            const prepMethod = document.getElementById('prepMethod').value;
+            let dilutionFactor = 0;
+            if (prepMethod === 'shaken') dilutionFactor = 0.25;
+            if (prepMethod === 'stirred') dilutionFactor = 0.15;
+            if (prepMethod === 'built') dilutionFactor = 0.05;
+
+            const finalABV = ((totalABV / totalOunces) * 100) * (1 - dilutionFactor);
+
+            document.getElementById('result').textContent = `Total ABV of the cocktail: ${finalABV.toFixed(2)}% (including ${dilutionFactor * 100}% dilution)`;
+        }
+    </script>
+
+</body>
+</html>
