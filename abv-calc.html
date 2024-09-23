@@ -134,7 +134,7 @@
             <div class="preparation-method">
                 <label for="prepMethod">Preparation Method</label>
                 <select id="prepMethod">
-                    <option value="shaken">Shaken (25% dilution)</option>
+                    <option value="shaken">Shaken (20% dilution)</option>
                     <option value="stirred">Stirred (15% dilution)</option>
                     <option value="built">Built in Glass (5% dilution)</option>
                 </select>
@@ -244,7 +244,7 @@
 
             const prepMethod = document.getElementById('prepMethod').value;
             let dilutionFactor = 0;
-            if (prepMethod === 'shaken') dilutionFactor = 0.25;
+            if (prepMethod === 'shaken') dilutionFactor = 0.20;
             if (prepMethod === 'stirred') dilutionFactor = 0.15;
             if (prepMethod === 'built') dilutionFactor = 0.05;
 
